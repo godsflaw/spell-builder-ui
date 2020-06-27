@@ -11,10 +11,15 @@ async function fetchJson(url, init) {
 }
 
 const Index = () => {
-  const [addressUrl, setAddressUrl] = useState(null);
+  const defaultUrl = 'https://changelog.makerdao.com/releases/mainnet/1.0.8/contracts.json';
+  const [addressUrl, setAddressUrl] = useState(defaultUrl);
 
-  function buildSpell(){
+  async function buildSpell(){
     console.log('addressUrl', addressUrl);
+    const response = await fetch(addressUrl);
+    const json = await response.json();
+    if (!response.ok) throw new Error(`${response.statusText}: ${json.error?.message || JSON.stringify(json)}`);
+    console.log('json', json);
   }
 
 
@@ -25,7 +30,8 @@ const Index = () => {
         <Card sx={{ py: 0, px: 3, my: 2 }}>
           <Label>Contract Addresses link</Label>
           <Input onChange={(event) => setAddressUrl(event.target.value)}
-          defaultValue="changelog.makerdao.com/releases/mainnet/1.0.8/contracts.json"></Input>
+          value={addressUrl}
+          defaultValue={defaultUrl}></Input>
           <Label>Copyright Organization</Label>
           <Input defaultValue="MakerDao"></Input>
           <Label>Solidity Version</Label>
